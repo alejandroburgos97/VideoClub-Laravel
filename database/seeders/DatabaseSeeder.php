@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Movie;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 class DatabaseSeeder extends Seeder
 {
@@ -175,6 +176,39 @@ class DatabaseSeeder extends Seeder
 			'synopsis' => 'Un joven hastiado de su gris y monótona vida lucha contra el insomnio. En un viaje en avión conoce a un carismático vendedor de jabón que sostiene una teoría muy particular: el perfeccionismo es cosa de gentes débiles; sólo la autodestrucción hace que la vida merezca la pena. Ambos deciden entonces fundar un club secreto de lucha, donde poder descargar sus frustaciones y su ira, que tendrá un éxito arrollador.'
 		)
 	);
+
+	private $arrayUsers =array(
+		array(
+			'name' => 'alejandro',
+			'email' => 'alejandro@correo.com',
+			'password' => "123456789",
+			"created_at"=>"Y-m-d H:i:s",
+            "updated_at"=>"Y-m-d H:i:s"
+		),
+		array(
+			'name' => 'admin',
+			'email' => 'admin@correo.com',
+			'password' => "123456789",
+			"created_at"=>"Y-m-d H:i:s",
+            "updated_at"=>"Y-m-d H:i:s"
+		),
+		
+	);
+	private function seedUsers(){
+		DB::table('users')->delete();        
+		foreach( $this->arrayUsers as $user ) {
+			$u= new User;
+			$u->name=$user['name'];
+			$u->email=$user['email'];
+			$u->password=bcrypt($user['password']);
+			$u->created_at=date($user['created_at']);
+			$u->updated_at=date($user['updated_at']);
+			$u->save();
+		}
+
+
+	}
+
     private function seedCatalog(){
         DB::table('movies')->delete();
         foreach( $this->arrayPeliculas as $pelicula ) {
@@ -199,7 +233,9 @@ class DatabaseSeeder extends Seeder
     } 
     public function run()
     {
+		self::seedUsers(); 
         self::seedCatalog();
         $this->command->info('Tabla catálogo inicializada con datos!');
+		$this->command->info('Tabla usuarios inicializada con datos!'); 
     }
 }
