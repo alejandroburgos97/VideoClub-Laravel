@@ -22,12 +22,36 @@
         <br>
         <div class="d-grid gap-2 d-md-block">
             @if ($pelicula->rented)
-            <a class="btn btn-danger" role="button">Devolver película</a>
+            <form action="{{action('App\Http\Controllers\CatalogController@putReturn', $pelicula->id)}}"
+                method="POST" style="display:inline">
+                {{ method_field('PUT') }}
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-warning" style="display:inline">
+                Devolver película
+                </button>
+            </form>
             @else
-            <a class="btn btn-primary" role="button">Alquilar película</a>
+            <form action="{{action('App\Http\Controllers\CatalogController@putRent', $pelicula->id)}}"
+                method="POST" style="display:inline">
+                {{ method_field('PUT') }}
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-success" style="display:inline">
+                    Alquilar película
+                </button>
+            </form>
             @endif
-            <a href="{{ url('/catalog/edit/' . $pelicula->id ) }}" class="btn btn-warning" role="button"><i class="fa fa-pencil" aria-hidden="true"></i> Editar película</a>
-            <a href="{{ url('/catalog') }}" class="btn btn-light" role="button"><i class="fa fa-arrow-left" aria-hidden="true"></i> Volver al listado</a>
+            <a href="{{ url('/catalog/edit/' . $pelicula->id ) }}" class="btn btn-primary" role="button"><i class="fa fa-pencil" aria-hidden="true"></i> Editar película</a>
+            
+            <form action="{{action('App\Http\Controllers\CatalogController@deleteMovie', $pelicula->id)}}"
+                method="POST" style="display:inline">
+                {{ method_field('DELETE') }}
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-danger" style="display:inline">
+                    Eliminar película
+                </button>
+            </form>
+
+            <a href="{{ url('/catalog') }}" class="btn btn-light" role="button"><i class="fa fa-arrow-left" aria-hidden="true"></i> Volver al listado</a>            
         </div>
     </div>
 </div>

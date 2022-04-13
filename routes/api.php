@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\APICatalogController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::put('/v1/catalog/{id}/return', [APICatalogController::class, 'putReturn']);
+
+Route::put('/v1/catalog/{id}/rent', [APICatalogController::class, 'putRent']);
+
+Route::resource('/v1/catalog', APICatalogController::class, ['except' => ['create', 'edit']]);
+

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Movie;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CatalogController extends Controller
 {
+
+	public $parameters = ["title", "year","director","poster","rented","synopsis"];
 
 	public function getIndex()
 	{
@@ -31,23 +34,46 @@ class CatalogController extends Controller
 	public function putEdit(Request $request, $id){
 		$pelicula=Movie::findOrFail($id);
 		self::movie($pelicula, $request);
+		toast('Película modificada con exito','success');
 		return redirect()->action([CatalogController::class, 'getShow'], array('id' => $id));		
 	}
 
 	public function postCreate(Request $request){
 		$pelicula = new Movie;
 		self::movie($pelicula, $request);
+		toast('Película agregada con exito','success');
+		return redirect()->action([CatalogController::class, 'getIndex']);
+	}
+
+	public function putRent($id){
+		$pelicula=Movie::findOrFail($id);
+		$pelicula->rented = true;	
+		$pelicula->save();
+		toast('Película alquilada con exito','success');
+		return redirect()->action([CatalogController::class, 'getShow'], array('id' => $id));	
+	}
+
+	public function putReturn($id){
+		$pelicula=Movie::findOrFail($id);
+		$pelicula->rented = false;
+		$pelicula->save();	
+		toast('Película devuelta con exito','success');
+		return redirect()->action([CatalogController::class, 'getShow'], array('id' => $id));	
+	}
+
+	public function deleteMovie($id){
+		$pelicula=Movie::findOrFail($id);
+		$pelicula->delete();
+		toast('Película eliminada con exito','success');
 		return redirect()->action([CatalogController::class, 'getIndex']);
 	}
 
 	public function movie($pelicula, $request){
 
-		$pelicula->title = $request->title;
-		$pelicula->year = $request->year;
-		$pelicula->director = $request->director;
-		$pelicula->poster = $request->poster;
-		$pelicula->rented = false;
-		$pelicula->synopsis = $request->synopsis; 
+        foreach($this->parameters as $field){
+			if ($field=="rented") continue;
+            $pelicula->$field = $request->$field;
+        }
 		$pelicula->save();
 	}
 }
